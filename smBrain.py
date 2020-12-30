@@ -14,19 +14,19 @@ class MySMClass(sm.SM):
         self.startState = 5
 
     def getNextValues(self, state, inp):
-        currentDist = inp.sonars[3]
+        currentDist = min(inp.sonars[3], inp.sonars[4])
         delta = currentDist - self.targetDist
 
-        if not self.done(state):
+        if abs(delta) > self.tolerance:
             fvel = self.coeff * delta * self.fvelMax
             fvel = max(min(fvel, self.fvelMax), -self.fvelMax)
             return (currentDist, io.Action(fvel = fvel, rvel = 0))
         else:
-            return (currentDist, None)
+            return (currentDist, io.Action(fvel = 0, rvel = 0))
 
     
-    def done(self, state):
-        return abs(state - self.targetDist) <= self.tolerance
+    # def done(self, state):
+        # return abs(state - self.targetDist) <= self.tolerance
 
 mySM = MySMClass(0.5)
 mySM.name = 'brainSM'
