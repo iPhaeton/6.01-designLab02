@@ -5,11 +5,11 @@ import lib601.gfx as gfx
 from soar.io import io
 
 class MySMClass(sm.SM):
-    fcoeff = 5
-    rcoeff = 100
+    fcoeff = 10
+    rcoeff = 500
     fvelMax = 0.3
     rvelMax = 0.3
-    tolerance = 0.001
+    tolerance = 0.0001
 
     def __init__(self, targetDist):
         self.targetDist = targetDist
@@ -39,12 +39,12 @@ class MySMClass(sm.SM):
         return io.Action(fvel = fvel, rvel = 0)
 
     def stepCCW(self, delta):
-        fvel = self.calculateFvel(delta)
+        fvel = self.calculateFvel(delta) / self.fcoeff
         rvel = self.calculateRvel(abs(delta))
         return io.Action(fvel = fvel, rvel = rvel)
 
     def stepCW(self, delta):
-        fvel = self.calculateFvel(delta)
+        fvel = self.calculateFvel(delta) / self.fcoeff
         rvel = self.calculateRvel(-abs(delta))
         return io.Action(fvel = fvel, rvel = rvel)
 
