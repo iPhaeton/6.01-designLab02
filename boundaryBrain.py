@@ -16,10 +16,10 @@ class MySMClass(sm.SM):
         self.startState = 'searching' # searching, following
 
     def greaterThan(self, d1, d2):
-        return not self.lessOrEqualThan(d1, d2)
+        return d1 - d2 > self.tolerance
 
-    def lessOrEqualThan(self, d1, d2):
-        return self.equals(d1, d2) or d1 - d2 < 0
+    def lessThan(self, d1, d2):
+        return d1 - d2 < -self.tolerance
 
     def equals(self, d1, d2):
         return abs(d1 - d2) <= self.tolerance
@@ -50,7 +50,7 @@ class MySMClass(sm.SM):
 
     def getSteerAwayDelta(self, inp):
         for sonar in inp.sonars:
-            if self.lessOrEqualThan(sonar, self.targetDist):
+            if self.lessThan(sonar, self.targetDist):
                 delta = sonar - self.targetDist
                 return delta
 
@@ -120,7 +120,7 @@ def brainStart():
 # this function is called 10 times per second
 def step():
     inp = io.SensorInput()
-    print inp.sonars[3]
+    # print inp.sonars[3]
     robot.behavior.step(inp).execute()
     io.done(robot.behavior.isDone())
 
