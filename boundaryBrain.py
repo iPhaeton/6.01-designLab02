@@ -48,6 +48,18 @@ class MySMClass(sm.SM):
         rvel = self.calculateRvel(-abs(delta))
         return io.Action(fvel = fvel, rvel = rvel)
 
+    def getSteerAwayDelta(self, inp):
+        for sonar in inp.sonars:
+            if self.lessOrEqualThan(sonar, self.targetDist):
+                delta = sonar - self.targetDist
+                return delta
+
+    def getSteerToDelta(self, inp):
+        sonar = inp.sonars[7]
+        if self.greaterThan(sonar, self.targetDist):
+            delta = sonar - self.targetDist
+            return delta
+
     def getNextValues(self, state, inp):
         forwardDist = min(inp.sonars[3], inp.sonars[4])
         wallDist = inp.sonars[7]
@@ -60,13 +72,13 @@ class MySMClass(sm.SM):
                 return ('following', io.Action(fvel = 0, rvel = 0))
 
         if state == 'following':
-            if self.lessOrEqualThan(forwardDist, self.targetDist):
+            steerAwayDelta = self.getSteerAwayDelta(inp)
+            if steerAwayDelta is not None:
                 delta = forwardDist - self.targetDist
                 return (state, self.stepCCW(delta))
-            if self.lessOrEqualThan(wallDist, self.targetDist):
-                delta = wallDist - self.targetDist
-                return (state, self.stepCCW(delta))
-            if self.greaterThan(wallDist, self.targetDist):
+
+            steerToDelta = self.getSteerToDelta(inp)
+            if steerToDelta is not None:
                 delta = wallDist - self.targetDist
                 return (state, self.stepCW(delta))
 
