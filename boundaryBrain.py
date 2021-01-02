@@ -39,21 +39,19 @@ class MySMClass(sm.SM):
         return io.Action(fvel = fvel, rvel = 0)
 
     def stepCCW(self, delta):
-        fvel = self.calculateFvel(delta) / self.fcoeff
         rvel = self.calculateRvel(abs(delta))
-        return io.Action(fvel = fvel, rvel = rvel)
+        return io.Action(fvel = self.targetDist / 10, rvel = rvel)
 
     def stepCW(self, delta):
-        fvel = self.calculateFvel(delta) / self.fcoeff
         rvel = self.calculateRvel(-abs(delta))
-        return io.Action(fvel = fvel, rvel = rvel)
+        return io.Action(fvel = self.targetDist / 10, rvel = rvel)
 
     def getDelta(self, sonar):
         delta = sonar - self.targetDist
         return delta
 
     def getSteerAwayDelta(self, inp):
-        for sonar in inp.sonars[3:7]:
+        for sonar in inp.sonars[3:]:
             if self.lessThan(sonar, self.targetDist):
                 return self.getDelta(sonar)
 
