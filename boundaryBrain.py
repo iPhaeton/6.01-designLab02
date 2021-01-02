@@ -40,11 +40,11 @@ class MySMClass(sm.SM):
 
     def stepCCW(self, delta):
         rvel = self.calculateRvel(abs(delta))
-        return io.Action(fvel = self.targetDist / 10, rvel = rvel)
+        return io.Action(fvel = self.targetDist / 5, rvel = rvel)
 
     def stepCW(self, delta):
         rvel = self.calculateRvel(-abs(delta))
-        return io.Action(fvel = self.targetDist / 10, rvel = rvel)
+        return io.Action(fvel = self.targetDist / 5, rvel = rvel)
 
     def getDelta(self, sonar):
         delta = sonar - self.targetDist
@@ -56,9 +56,9 @@ class MySMClass(sm.SM):
                 return self.getDelta(sonar)
 
     def getSteerToDelta(self, inp):
-        sonar = inp.sonars[7]
-        if self.greaterThan(sonar, self.targetDist):
-            return self.getDelta(sonar)
+        for sonar in inp.sonars[6:]:
+            if self.greaterThan(sonar, self.targetDist):
+                return self.getDelta(sonar)
 
     def getNextValues(self, state, inp):
         forwardDist = min(inp.sonars[3], inp.sonars[4])
@@ -93,7 +93,7 @@ class MySMClass(sm.SM):
     # def done(self, state):
         # return abs(state - self.targetDist) <= self.tolerance
 
-mySM = MySMClass(0.5)
+mySM = MySMClass(0.3)
 mySM.name = 'brainSM'
 
 ######################################################################
